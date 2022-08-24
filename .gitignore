@@ -1,0 +1,10 @@
+schemas/__pycache__
+.vscode
+api/__pycache__
+database/__pycache__
+interfaces/__pycache__
+models/database/__pycache__
+dependencies/__pycache__
+er.py 
+
+
