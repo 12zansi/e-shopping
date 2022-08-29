@@ -1,15 +1,15 @@
 # e-shopping
-this e-commerce side website
+this is e-commerce side website
        This website is very useful for the biggner of python.category like clothes,
          tv,
          washing machine,
          filter,
          ac,
-         refregirator,
-         invetor,
+         refrigerator,
+         invertor,
          mobile phone,
          laptop,
          footwear,
-         watches etc products are selling online.
+         watches etc related products are selling online.
          
          
