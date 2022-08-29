@@ -1,31 +1,31 @@
 
-from sqlalchemy import Column,Integer,String
-from database.connection import Base
+from sqlalchemy import Column,Integer,String,ForeignKey
+from backend.database.connection import Base
 
-class TBProductElectronic(Base):
-    __tablename__ = 'product_electronic'
+class TBDelivery(Base):
+    __tablename__ = 'delivery'
     
     __table_args__ = {
         'mysql_engine': 'InnoDB'
     }
 
-    electronic_id = Column(Integer, primary_key = True, index = True)
-    capacity = Column(String(50), default = None)
-    technology = Column(String(50), default = None)
+    delivery_id = Column(Integer, primary_key = True, index = True)
 
-    ram =  Column(String(50), default = None)
-    display_size = Column(String(50), default = None)
-    battery_type = Column(String(50), default = None)
-    operating_system = Column(String(50), default = None)
-    internal_storage = Column(String(50), default = None)
-    resolution = Column(String(50), default = None)
-    processor_brand = Column(String(50), default = None)
-    processor_name = Column(String(50), default = None)
-    ssd = Column(String(50), default = None)
+    delivery_type = Column(String(50), default = "cash on delivery")
+    status_id = Column(Integer,ForeignKey("status.status_id"))
 
-    no_of_doors = Column(Integer, default = 0)
-    warranty = Column(String(50))
 
-    processor_type = Column(String(50), default = None)
+# Table flipcart.status{
+#    status_id int
+#    status_name str
+# }
 
-    p_id = Column(Integer, unique = True)
+# Table flipcart.delivery{
+#   delivery_id int
+#   delivery_date date
+#   delivery_type str
+#   status_id str
+#   place_order_id int
+#   courier_id int
+#   courier_boy_id int
+# }

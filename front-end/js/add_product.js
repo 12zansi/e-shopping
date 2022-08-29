@@ -1,4 +1,4 @@
-var url = 'http://127.0.0.1:8000/product?product='
+var url = 'http://127.0.0.1:8000/product?search_for='
 var id = [];
 var category = [];
 function load() {

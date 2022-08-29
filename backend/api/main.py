@@ -10,6 +10,8 @@ from backend.dependencies.login import LoginUser
 from backend.dependencies.registration import NewUser, TBRegister
 from backend.dependencies.update_data import UpdateData
 from backend.models.database.product_detail import TBProductDetail
+from backend.models.database.product_electronic import TBDelivery
+from backend.models.database.status import TBStatus
 from backend.models.database.tb_brand import TBBrand
 from backend.models.database.tb_category import TBCategory
 from backend.models.database.tb_register import TBRegister
@@ -17,6 +19,7 @@ from backend.schemas.brand import BrandDetail
 from backend.schemas.category import CategoryDetail
 from backend.schemas.delete_model.delete_cart import DeleteCart
 from backend.schemas.h_accessories import Producti
+from backend.schemas.p_electronic import Delivery, Status
 from backend.schemas.place_order import PlaceOrder
 from backend.schemas.product import Product
 from backend.schemas.product_details import ProductDetail
@@ -131,6 +134,15 @@ def in_place_order(place_order: PlaceOrder, place_order_detail: AddData = Depend
     return place_order_detail.add_in_place_order(place_order)
 
 
-@app.post('/file')
-def file_upload(file: UploadFile = File(...)):
-    return file.filename
+@app.post('/delivery')
+def file_upload(status:Delivery,db: Session = Depends(start_session)):
+    statu = TBDelivery(delivery_type = status.delivery_type, status_id = status.status_id)
+    db.add(statu)
+    db.commit()
+    db.refresh(statu)
+    return statu
+
+@app.get('/delivery')
+def get_delivery(db: Session = Depends(start_session)):
+    defd = db.query(TBStatus,TBDelivery).join(TBDelivery,TBStatus.status_id == TBDelivery.status_id).all()
+    return defd
