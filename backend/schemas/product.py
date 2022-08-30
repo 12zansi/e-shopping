@@ -13,8 +13,4 @@ class Product(BaseModel):
     is_electronic: Optional[str] = 'yes'
     c_id: int
 
-class ProductType():
-
-    name: str
-    
 

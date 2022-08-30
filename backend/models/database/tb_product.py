@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,VARCHAR
+from sqlalchemy import Column,Integer,String,ForeignKey
 from backend.database.connection import Base
 
 class TBProduct(Base):
@@ -17,5 +17,5 @@ class TBProduct(Base):
     brand_name = Column(String(100)) 
     category_name = Column(String(100))
     is_electronic = Column(String(100))
-    c_id = Column(Integer)
-    r_id = Column(Integer, default = 1)
+    c_id = Column(Integer,ForeignKey("category.category_id"))
+    r_id = Column(Integer,ForeignKey("register.register_id"), default = 1)

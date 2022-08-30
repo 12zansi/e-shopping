@@ -10,4 +10,4 @@ class TBStatus(Base):
     }
     
     status_id =  Column(Integer, primary_key = True, index = True)
-    status_name = Column(String(70),unique = True)
+    status_name = Column(String(70), unique = True)

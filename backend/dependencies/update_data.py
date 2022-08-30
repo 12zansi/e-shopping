@@ -1,6 +1,6 @@
 from requests import Session
 from fastapi import Depends
-from backend.models.database.cart import TBCart
+from backend.models.database.tb_cart import TBCart
 from backend.schemas.updateModel.update_cart import UpdateQuantity
 from backend.database.session import start_session
 

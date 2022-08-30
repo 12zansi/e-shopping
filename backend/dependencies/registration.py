@@ -1,5 +1,6 @@
 
 from email_validator import validate_email, EmailNotValidError
+from backend.dependencies.add_data import AddData
 from backend.models.database.tb_brand import TBBrand
 from passlib.context import CryptContext
 from backend.models.database.tb_register import  TBRegister
@@ -9,9 +10,11 @@ from backend.database.session import start_session
 from requests import Session
 from fastapi import Depends,HTTPException
 
-class NewUser:
-    
-    def create_user(self, user: CreateUser, db: Session = Depends(start_session) ):
+class NewUser(AddData):
+    def __init__(self,db: Session = Depends(start_session)):
+      self.db = db   
+
+    def create_user(self, user: CreateUser):
         PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
         try:
          valid = validate_email(email = user.email)
@@ -20,23 +23,24 @@ class NewUser:
           raise HTTPException(
             status_code=404, detail="please enter a valid email")
 
-        db_user = db.query(TBRegister).filter(TBRegister.username == user.username and TBRegister.email == user.email).first()
+        db_user = self.db.query(TBRegister).filter(TBRegister.username == user.username and TBRegister.email == user.email).first()
         if db_user:
           raise HTTPException(status_code=400, detail="username or email already exists")
         hashed_password = PWD_CONTEXT.hash(user.password)
         
-        new_user = TBRegister(username = user.username, email = email, password = hashed_password)
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
+        new_user = TBRegister(username = user.username, 
+           email = email,
+           password = hashed_password)
+        
+        NewUser._add_in_table(self,new_user)
 
         return new_user
     
-    def add_brand(self, brand: BrandDetail, db: Session = Depends(start_session)):
+    def add_brand(self, brand: BrandDetail):
         new_brand = TBBrand(brand_name = brand.brand_name)
-        db.add(new_brand)
-        db.commit()
-        db.refresh(new_brand)
-        return new_brand
+        
+        NewUser._add_in_table(self,new_brand)
 
+        return new_brand
+    
 

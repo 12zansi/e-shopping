@@ -1,5 +1,5 @@
 from email.policy import default
-from sqlalchemy import Column,Integer,String
+from sqlalchemy import Column,Integer,String, ForeignKey
 from backend.database.connection import Base
 
 class TBBrand(Base):
@@ -9,4 +9,4 @@ class TBBrand(Base):
     }
     brand_id = Column(Integer, primary_key = True, index = True)
     brand_name = Column(String(50), unique = True)
-    u_id = Column(Integer, default = 1)
+    r_id = Column(Integer, ForeignKey("register.register_id"), default = 1)

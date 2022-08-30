@@ -3,7 +3,7 @@ from backend.database.session import start_session
 from requests import Session
 from fastapi import Depends
 
-from backend.models.database.product import TBProduct
+from backend.models.database.tb_product import TBProduct
 from backend.models.database.tb_brand import TBBrand
 from backend.models.database.tb_category import TBCategory
 
