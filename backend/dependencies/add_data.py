@@ -1,11 +1,13 @@
-from sre_constants import CATEGORY_UNI_NOT_DIGIT
+
+from webbrowser import get
 from backend.interfaces.interfaces_class import AddDataInterface
+from backend.models.database.detail import Detail, Item, ItemDetail
 from backend.models.database.tb_address import TBAddress
 from backend.models.database.tb_cart import TBCart
 from backend.models.database.tb_place_order import TBPlaceOrder
 from backend.models.database.tb_product import TBProduct
 from backend.models.database.tb_product_detail import TBProductDetail
-from backend.models.database.tb_product_images import TBProductImages
+from backend.models.database.tb_product_images import TBProductImages,TBImages
 from backend.schemas.address import Address
 from backend.schemas.cart import CartDetail
 from backend.schemas.category import CategoryDetail
@@ -13,11 +15,12 @@ from backend.models.database.tb_category import TBCategory
 from backend.database.session import start_session
 from requests import Session
 from fastapi import Depends, UploadFile, File, Form
+from backend.schemas.detail import BDetail, BItem, BItemDetail
 from backend.schemas.product_detail import ProductDetail
 from backend.schemas.place_order import PlaceOrder
 import random
 from backend.schemas.product import Product
-from backend.schemas.product_image import ProductImage
+from backend.schemas.product_image import ProductImage, Image
 
 
 class AddData(AddDataInterface):
@@ -97,8 +100,15 @@ class AddData(AddDataInterface):
 
             AddData._add_in_table(self, images)
             image_list.append(data)
+            
+        get_data = self.db.query(TBProductImages).filter(TBProductImages.product_id == images.product_id).limit(1).all()
+      
+        only = Image(image_id = get_data[0].image_id, product_id = get_data[0].product_id)
+        only_table = TBImages(image_id = only.image_id, product_id = only.product_id)
+        AddData._add_in_table(self, only_table)
 
-        return image_list
+
+        return only_table
 
     
     def add_detail(self, product: ProductDetail):
@@ -148,3 +158,11 @@ class AddData(AddDataInterface):
                                    r_id=in_place_order.r_id)
 
         return AddData._add_in_table(self, place_order)
+
+    def add_y(self, item: BItemDetail):
+        add_y = ItemDetail(itemId = item.item_id, detailId = item.detail_id)
+        AddData._add_in_table(self, add_y)
+        return add_y
+
+    
+

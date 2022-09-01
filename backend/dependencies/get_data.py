@@ -45,3 +45,7 @@ class GetData:
         else:
             get_product_detail = self.db.query(TBProduct).all()
         return get_product_detail
+
+
+    def get_item(self, id: int, db: Session = Depends(start_session)):
+        get = db.query().filter().all()

@@ -13,6 +13,7 @@ from backend.schemas.address import Address
 from backend.schemas.brand import BrandDetail
 from backend.schemas.cart import CartDetail
 from backend.schemas.category import CategoryDetail
+from backend.schemas.detail import BDetail, BItem, BItemDetail
 from backend.schemas.product_detail import ProductDetail
 from backend.schemas.place_order import PlaceOrder
 from backend.schemas.product import Product
@@ -116,3 +117,7 @@ def delete_cart(register_id: int,cart_id: Optional[int] = None, db: Session = De
 @app.post('/place_order', tags = ['place_order'])
 def add_in_placeorder(place_order: PlaceOrder, place_order_detail: AddData = Depends(AddData)):
     return place_order_detail.add_in_place_order(place_order)
+
+@app.post('/item', tags = ['place_order'])
+def add_in_item(place_order: BItemDetail, detail: AddData = Depends(AddData)):
+    return detail.add_y(place_order)

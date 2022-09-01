@@ -6,3 +6,7 @@ class ProductImage(BaseModel):
     total_stock: int
     product_id: int
    
+
+class Image(BaseModel): 
+    product_id: int
+    image_id: int

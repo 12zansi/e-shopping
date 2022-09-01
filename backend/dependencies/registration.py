@@ -40,7 +40,7 @@ class NewUser(AddData):
         new_brand = TBBrand(brand_name = brand.brand_name)
         
         NewUser._add_in_table(self,new_brand)
-
+        print(new_brand.brand_id)
         return new_brand
     
 

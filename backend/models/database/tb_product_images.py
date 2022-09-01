@@ -13,3 +13,13 @@ class TBProductImages(Base):
      total_stock = Column(Integer)
      product_id = Column(Integer, ForeignKey("product.product_id"))
      r_id = Column(Integer, ForeignKey("register.register_id"), default = 1)
+
+class TBImages(Base):
+     __tablename__ = 'images'
+    
+     __table_args__ = {
+        'mysql_engine': 'InnoDB'
+     }
+     id = Column(Integer, primary_key = True, index = True)
+     image_id = Column(Integer, ForeignKey("product_images.image_id"))
+     product_id = Column(Integer, ForeignKey("product.product_id"))
