@@ -9,4 +9,4 @@ class TBBrand(Base):
     }
     brand_id = Column(Integer, primary_key = True, index = True)
     brand_name = Column(String(50), unique = True)
-    r_id = Column(Integer, ForeignKey("register.register_id"), default = 1)
+    user_id = Column(Integer, ForeignKey("register.user_id"), default = 1)

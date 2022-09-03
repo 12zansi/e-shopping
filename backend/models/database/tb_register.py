@@ -8,7 +8,7 @@ class TBRegister(Base):
     __table_args__ = {
         'mysql_engine': 'InnoDB'
     }
-    register_id = Column(Integer, primary_key = True, index = True)
+    user_id = Column(Integer, primary_key = True, index = True)
     username = Column(String(50), unique = True)
     email = Column(String(70), unique = True)
     password = Column(String(200))

@@ -10,10 +10,7 @@ class TBCart(Base):
     }
 
     cart_id = Column(Integer, primary_key = True, index = True)
-    product_name = Column(String(250))
-    image_id = Column(Integer, ForeignKey("product_images.image_id") )
-    detail_id = Column(Integer, ForeignKey("product_detail.detail_id"))
-    product_price = Column(Integer)
     quantity = Column(Integer)
-    total_price = Column(Integer)
-    r_id = Column(Integer,ForeignKey("register.register_id"))
+    product_id = Column(Integer, ForeignKey("product.product_id"))
+    image_id = Column(Integer, ForeignKey("product_images.image_id") )
+    user_id = Column(Integer,ForeignKey("register.user_id"))

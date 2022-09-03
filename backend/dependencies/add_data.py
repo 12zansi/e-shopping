@@ -1,7 +1,7 @@
 
 from webbrowser import get
 from backend.interfaces.interfaces_class import AddDataInterface
-from backend.models.database.detail import Detail, Item, ItemDetail
+from backend.models.database.tb_favorite import Cate, Detail, Item, ItemDetail, Pro
 from backend.models.database.tb_address import TBAddress
 from backend.models.database.tb_cart import TBCart
 from backend.models.database.tb_place_order import TBPlaceOrder
@@ -15,7 +15,7 @@ from backend.models.database.tb_category import TBCategory
 from backend.database.session import start_session
 from requests import Session
 from fastapi import Depends, UploadFile, File, Form
-from backend.schemas.detail import BDetail, BItem, BItemDetail
+from backend.schemas.detail import BDetail, BItem, BItemDetail, Bcate, Bpro
 from backend.schemas.product_detail import ProductDetail
 from backend.schemas.place_order import PlaceOrder
 import random
@@ -164,5 +164,13 @@ class AddData(AddDataInterface):
         AddData._add_in_table(self, add_y)
         return add_y
 
-    
+    def add_cate(self, item: Bcate):
+        add_cate = Cate(name = item.name, cate_id = item.cate_id)
+        AddData._add_in_table(self, add_cate)
+        return add_cate
+
+    def add_pro(self, item: Bpro):
+        add_cate = Pro(name = item.name, cate_id = item.c_id)
+        AddData._add_in_table(self, add_cate)
+        return add_cate
 

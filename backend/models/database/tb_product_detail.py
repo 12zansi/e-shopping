@@ -12,4 +12,4 @@ class TBProductDetail(Base):
      attribute_name = Column(String(50))
      attribute_value = Column(String(50))
      product_id = Column(Integer, ForeignKey("product.product_id"))
-     r_id = Column(Integer,ForeignKey("register.register_id"), default = 1)
+     user_id = Column(Integer,ForeignKey("register.user_id"), default = 1)

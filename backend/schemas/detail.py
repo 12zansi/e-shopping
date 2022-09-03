@@ -8,5 +8,12 @@ class BItem(BaseModel):
     name: str
 
 class BDetail(BaseModel):
-    name: str 
-   
+    name: str
+
+class Bcate(BaseModel): 
+    name: str
+    cate_id: int
+
+class Bpro(BaseModel):
+    name: str
+    c_id: int
