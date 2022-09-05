@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Depends, UploadFile, File, Form
+from fastapi import FastAPI, Depends, UploadFile, File, Form, Header
 from backend.database.connection import connection, Base
 from backend.database.session import start_session
 from requests import Session
@@ -14,10 +14,12 @@ from backend.schemas.brand import BrandDetail
 from backend.schemas.cart import CartDetail
 from backend.schemas.category import CategoryDetail
 from backend.schemas.detail import BItemDetail, Bcate, Bpro
+from backend.schemas.favorite import Favorite
 from backend.schemas.product_detail import ProductDetail
-from backend.schemas.place_order import PlaceOrder
+from backend.schemas.place_order import OrderDetail
 from backend.schemas.product import Product
 from backend.schemas.register import CreateUser, Login
+from backend.schemas.status import Status
 from backend.schemas.updateModel.update_cart import UpdateQuantity
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -36,7 +38,7 @@ app.add_middleware(
 )
 
 
-@app.post("/auth/registeration", tags = ['auth'])
+@app.post("/auth/register", tags = ['auth'])
 def create_user(user: CreateUser, register_detail: NewUser = Depends(NewUser)):
     
     return register_detail.create_user(user)
@@ -47,7 +49,16 @@ def login(user: Login, db: Session = Depends(start_session), login_detail: Login
     
     return login_detail.login_detail(user, db)
 
-@app.post("/auth/address", tags = ['auth'])
+@app.get("/user", tags = ['user'])
+def get_user(token: str | None = Header(None), user: GetData = Depends(GetData)):
+   return user.get_user_by_token(token)
+        
+
+@app.put("/user", tags = ['user'])
+def forgot_password(user:Login,password_data: UpdateData = Depends(UpdateData)):
+    return password_data.update_password(user)
+
+@app.post("/user", tags = ['user'])
 def add_address(address: Address, address_detail: AddData = Depends(AddData)):
     
     return address_detail.add_address(address)
@@ -65,6 +76,10 @@ def add_category(category: CategoryDetail, category_detail: AddData = Depends(Ad
     
     return category_detail.add_category(category)
 
+@app.get('/category',tags=['category'])
+def get_child_category(parent_id:int, category: GetData = Depends(GetData)):
+    return category.get_cate(parent_id)
+
 
 # Add Product
 @app.post('/product', tags = ['product'])
@@ -80,9 +95,9 @@ def search_product(search_for: str = '', name: Optional[str] = '', id: Optional[
 
 
 @app.post('/product/images', tags = ['product'])
-def add_produck_images(file1: list[UploadFile] = File(...), product_id: int = Form(...), color: str = Form(...), total_product: int = Form(...), add_images: AddData = Depends(AddData)):
+def add_produck_images(file1: list[UploadFile] = File(...), product_id: int = Form(...), add_images: AddData = Depends(AddData)):
 
-    return add_images.add_images(file1, product_id, color, total_product)
+    return add_images.add_images(file1, product_id)
 
 
 # Add product details
@@ -115,22 +130,22 @@ def delete_cart(register_id: int,cart_id: Optional[int] = None, db: Session = De
 
 # add in to place order
 @app.post('/place_order', tags = ['place_order'])
-def add_in_placeorder(place_order: PlaceOrder, place_order_detail: AddData = Depends(AddData)):
+def add_in_placeorder(place_order: OrderDetail, place_order_detail: AddData = Depends(AddData)):
     return place_order_detail.add_in_place_order(place_order)
 
-@app.post('/item', tags = ['place_order'])
-def add_in_item(place_order: BItemDetail, detail: AddData = Depends(AddData)):
-    return detail.add_y(place_order)
+@app.post('/favorite', tags = ['favorite'])
+def add_in_favorite(favorite: Favorite, detail: AddData = Depends(AddData)):
+    return detail.add_favorite(favorite)
 
-@app.get('/item')
-def item(id:int,db: Session = Depends(start_session), get_product_detail: GetData = Depends(GetData)):
-    return get_product_detail.get_cate(id,db)
+# @app.get('/favorite')
+# def item(id:int,db: Session = Depends(start_session), get_product_detail: GetData = Depends(GetData)):
+#     return get_product_detail.get_cate(id,db)
 
-@app.post('/cate')
-def categ(item:Bcate,detail: AddData = Depends(AddData)):
-    return detail.add_cate(item)
+@app.post('/status')
+def add_status(status:Status,detail: AddData = Depends(AddData)):
+    return detail.add_in_status(status)
 
-@app.post('/pro')
-def pro(item:Bpro,detail: AddData = Depends(AddData)):
-    return detail.add_pro(item)
+# @app.post('/pro')
+# def pro(item:Bpro,detail: AddData = Depends(AddData)):
+#     return detail.add_pro(item)
 

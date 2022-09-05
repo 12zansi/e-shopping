@@ -5,12 +5,11 @@ class Product(BaseModel):
 
     name: str
     description: str
+    mrp: int
     price: int
-    in_the_box: str
     model_name: str
-    brand_name: str
-    category_name: str
-    is_electronic: Optional[str] = 'yes'
-    c_id: int
+    brand_id: str
+    category_id: int
+    return_policy: int
 
 

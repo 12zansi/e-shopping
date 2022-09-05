@@ -15,5 +15,5 @@ class TBPlaceOrder(Base):
       delivery_type = Column(String(50), default = "cash on delivery")
       address_id = Column(Integer, ForeignKey("address.address_id"))
       order_date = Column(DateTime, default = datetime.datetime.today())
-      status = Column(Integer,ForeignKey("status.status_id"), default = 1)
+      status_id = Column(Integer,ForeignKey("order_status.status_id"), default = 1)
       user_id = Column(Integer, ForeignKey("register.user_id"))

@@ -11,7 +11,7 @@ class TBCategory(Base):
 
     category_id = Column(Integer, primary_key = True, index = True)
     category_name = Column(String(50))
-    parent_id = Column(Integer,ForeignKey("category.category_id"), default = 0)
+    parent_id = Column(Integer, default = 0)
     user_id = Column(Integer, ForeignKey("register.user_id"), default = 1)
 
     

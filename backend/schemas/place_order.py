@@ -1,9 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class PlaceOrder(BaseModel):
-      product_name: str
+class OrderDetail(BaseModel):
       total_price: int
-      address_id: int
       delivery_type: Optional[str] = 'case on delivery'
-      r_id: int
+      address_id: int
+      user_id: int

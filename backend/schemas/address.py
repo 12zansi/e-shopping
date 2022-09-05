@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 
 class Address(BaseModel):
-    area: str
+    mobile_no: int
+    address_line: str
     city: str
     pincode: int
     state: str
-    r_id: int
+    address_type: str
+    user_id: int

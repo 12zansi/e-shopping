@@ -71,7 +71,7 @@ function get_product(){
             "<td class='upper'>" +
             obj[i]["price"] +
             "</td>" +
-            "<td><button class='btn btn-primary' id='edit' onclick='run(this)' data-bs-toggle='modal' data-bs-target='#myModal2'>Add More Images</button><button id='deleteu' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#deleteModal' onclick='deleter(this)'>Add More Detail</button></td>" +
+            "<td><button class='btn btn-primary' id='edit' onclick='run(this)' data-bs-toggle='modal' data-bs-target='#myModal2'>Add More Images</button><button id='deleteu' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#Modal' onclick='deleter(this)'>Add More Detail</button></td>" +
            "</tr>"
       
         }
@@ -93,35 +93,21 @@ function add_more_images(){
 
 function result(){
     var x = document.querySelectorAll(".file1")
-    var y = document.getElementById('color')
     var pid =  document.getElementById("product_id").value
-    var total_stock = document.getElementById("total_product").value
+    
         for(i=0;i<x.length;i++){
             var formData = new FormData();
             formData.append("file1",x[i].files[0])
-            // console.log(x[i].files[0]['type'])
-            
             formData.append("product_id",pid)
-            formData.append("color",y.value)
-            formData.append("total_product",total_stock);
+           
             var request = new XMLHttpRequest();
             request.onreadystatechange = () => {
               if (request.readyState == 4 && request.status == 200) {
                   console.log(request)
               }
             }
-            // let body = JSON.stringify({
-            // //     Object.fromEntries(formData)
-            //     // file1: x[i].files[0]['name'],
-            //     // product_id: pid,
-            //     // color: y.value,
-            //     // total_product: total_stock 
-            //     file1: '@'+x[i].files[0]['name']+';type=image/png',
-            //     product_id:pid, color:y.value,total_product:total_stock 
-            // });
+      
             request.open("POST", "http://127.0.0.1:8000/product/add_product_images", true);
-          
-            // request.send("file1=",x[i].files[0],"&product_id=",product_id,"&color=",color,"&total_product=",total_stock);
             request.send(formData)
         }
        
@@ -154,8 +140,5 @@ function add_t(){
   var formData = new FormData();
   formData.append("file",t.files[0])
   request.open("POST", "http://127.0.0.1:8000/file", true);
-  // request.setRequestHeader(
-  //   'accept','application/json')
-  // request.send("file1=",x[i].files[0],"&product_id=",product_id,"&color=",color,"&total_product=",total_stock);
   request.send(formData)
 }

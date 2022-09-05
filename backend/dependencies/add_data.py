@@ -7,7 +7,8 @@ from backend.models.database.tb_cart import TBCart
 from backend.models.database.tb_place_order import TBPlaceOrder
 from backend.models.database.tb_product import TBProduct
 from backend.models.database.tb_product_detail import TBProductDetail
-from backend.models.database.tb_product_images import TBProductImages,TBImages
+from backend.models.database.tb_product_images import TBProductImages
+from backend.models.database.tb_status import TBStatus
 from backend.schemas.address import Address
 from backend.schemas.cart import CartDetail
 from backend.schemas.category import CategoryDetail
@@ -15,12 +16,13 @@ from backend.models.database.tb_category import TBCategory
 from backend.database.session import start_session
 from requests import Session
 from fastapi import Depends, UploadFile, File, Form
-from backend.schemas.detail import BDetail, BItem, BItemDetail, Bcate, Bpro
+from backend.schemas.favorite import Favorite
 from backend.schemas.product_detail import ProductDetail
-from backend.schemas.place_order import PlaceOrder
+from backend.schemas.place_order import OrderDetail
 import random
 from backend.schemas.product import Product
-from backend.schemas.product_image import ProductImage, Image
+from backend.schemas.product_image import ProductImage
+from backend.schemas.status import Status
 
 
 class AddData(AddDataInterface):
@@ -51,64 +53,61 @@ class AddData(AddDataInterface):
 
     def add_category(self, category: CategoryDetail):
         new_category = TBCategory(category_name = category.category_name, 
-            b_id = category.b_id)
+            parent_id = category.parent_id)
 
         return AddData._add_in_table(self, new_category)
 
 
     def add_address(self, address: Address):
-        new_address = TBAddress(area = address.area, 
+        new_address = TBAddress(mobile_no = address.mobile_no,
+            address_line = address.address_line, 
             city = address.city,
             pincode = address.pincode,
             state = address.state,
-            r_id = address.r_id)
+            address_type = address.address_type,
+            user_id = address.user_id)
 
         return AddData._add_in_table(self, new_address)
 
     def add_product(self, product: Product):
         new_product = TBProduct(name = product.name,
                                 description = product.description,
+                                mrp = product.mrp,
                                 price = product.price,
-                                in_the_box = product.in_the_box,
                                 model_name = product.model_name,
-                                brand_name = product.brand_name,
-                                category_name = product.category_name,
-                                is_electronic = product.is_electronic,
-                                c_id = product.c_id)
+                                brand_id = product.brand_id,
+                                category_id = product.category_id,
+                                return_policy = product.return_policy)
+
 
         product = AddData._add_in_table(self,new_product)
 
         return product
 
-    def add_images(self, images_list: list[UploadFile] = File(...), product_id: int = Form(...), color: str = Form(...), total_stock: int = Form(...),  db: Session = Depends(start_session)):
+    def add_images(self, images_list: list[UploadFile] = File(...), product_id: int = Form(...)):
         image_list = []
         for image in images_list:
 
             image_name = AddData.__rename_image_name(image, "product_images")
 
             data = ProductImage(image = image_name,
-                                color = color,
-                                total_stock = total_stock,
                                 product_id = product_id
                                 )
 
             images = TBProductImages(
-                product_id = data.product_id,
                 image_name = data.image,
-                color = data.color,
-                total_stock = data.total_stock)
+                product_id = data.product_id)
 
             AddData._add_in_table(self, images)
             image_list.append(data)
             
         get_data = self.db.query(TBProductImages).filter(TBProductImages.product_id == images.product_id).limit(1).all()
       
-        only = Image(image_id = get_data[0].image_id, product_id = get_data[0].product_id)
-        only_table = TBImages(image_id = only.image_id, product_id = only.product_id)
-        AddData._add_in_table(self, only_table)
+        # only = Image(image_id = get_data[0].image_id, product_id = get_data[0].product_id)
+        # only_table = TBImages(image_id = only.image_id, product_id = only.product_id)
+        # AddData._add_in_table(self, only_table)
 
-
-        return only_table
+        return get_data
 
     
     def add_detail(self, product: ProductDetail):
@@ -134,43 +133,39 @@ class AddData(AddDataInterface):
 
     def add_into_cart(self,cart_detail: CartDetail):
 
-        total_price = cart_detail.quantity * cart_detail.product_price
+        # total_price = cart_detail.quantity * cart_detail.produ
 
-        cart = TBCart(product_name = cart_detail.product_name,
-                      product_price = cart_detail.product_price,
+        cart = TBCart(
                       quantity = cart_detail.quantity,
-                      total_price = total_price,
                       image_id = cart_detail.image_id,
-                      detail_id = cart_detail.detail_id,
-                      r_id = cart_detail.r_id)
+                      product_id = cart_detail.product_id,
+                      user_id = cart_detail.user_id)
 
         return AddData._add_in_table(self, cart)
 
 
-    def add_in_place_order(self, in_place_order: PlaceOrder):
+    def add_in_place_order(self, in_place_order: OrderDetail):
 
-        place_order = TBPlaceOrder(username=in_place_order.username,
-                                   email=in_place_order.email,
-                                   products=in_place_order.products,
-                                   total_price=in_place_order.total_price,
-                                   address=in_place_order.address,
-                                   delivery_type=in_place_order.delivery_type,
-                                   r_id=in_place_order.r_id)
+        place_order = TBPlaceOrder(
+                                   total_price = in_place_order.total_price,
+                                   address_id = in_place_order.address_id,
+                                   delivery_type = in_place_order.delivery_type,
+                                   user_id = in_place_order.user_id)
 
         return AddData._add_in_table(self, place_order)
 
-    def add_y(self, item: BItemDetail):
-        add_y = ItemDetail(itemId = item.item_id, detailId = item.detail_id)
-        AddData._add_in_table(self, add_y)
-        return add_y
+    def add_favorite(self, item:Favorite):
+        favorite = ItemDetail(product_id = item.product_id, user_id = item.user_id)
+        AddData._add_in_table(self, favorite)
+        return favorite
 
-    def add_cate(self, item: Bcate):
-        add_cate = Cate(name = item.name, cate_id = item.cate_id)
-        AddData._add_in_table(self, add_cate)
-        return add_cate
+    def add_in_status(self, status: Status):
+        status = TBStatus(status_name = status.status_name)
+        AddData._add_in_table(self, status)
+        return status
 
-    def add_pro(self, item: Bpro):
-        add_cate = Pro(name = item.name, cate_id = item.c_id)
-        AddData._add_in_table(self, add_cate)
-        return add_cate
+    # def add_pro(self, item: Bpro):
+    #     add_cate = Pro(name = item.name, cate_id = item.c_id)
+    #     AddData._add_in_table(self, add_cate)
+    #     return add_cate
 
